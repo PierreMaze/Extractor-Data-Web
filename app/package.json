@@ -1,0 +1,49 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "description": "Analyse de données d'un site web qui détient un catalogue",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest",
+    "lint": "eslint .",
+    "fix": "prettier --write .",
+    "clean": "rimraf node_modules pnpm-lock.yaml package-lock.json dist",
+    "clean-exe": "cd.. && del /f /q ExtractData.exe && cd app",
+    "clean-all": "cd.. && del /f /q ExtractData.exe && cd app && rimraf node_modules pnpm-lock.yaml package-lock.json dist",
+    "build": "nexe -i src/index.js -o ExtractData.exe --target windows-x64-18.0.0 --build"
+  },
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "puppeteer": "^24.5.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.x",
+    "jest": "^29.7.0",
+    "nexe": "5.0.0-beta.4",
+    "prettier": "^3.5.3",
+    "rimraf": "^5.0.1"
+  },
+  "keywords": [
+    "automation",
+    "puppeteer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PierreMaze/Scrapping-App.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PierreMaze/Scrapping-App/issues"
+  },
+  "homepage": "https://github.com/PierreMaze/Scrapping-App#readme",
+  "author": "Pierre MAZELAYGUE",
+  "license": "MIT",
+  "packageManager": "pnpm@10.8.0"
+}
