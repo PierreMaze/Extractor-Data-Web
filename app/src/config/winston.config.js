@@ -24,12 +24,10 @@ const logger = winston.createLogger({
   transports: [new winston.transports.File({ filename: logFilePath })],
 });
 
-if (config.general.nodeEnv !== "production") {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.combine(winston.format.colorize(), customFormat),
-    })
-  );
-}
+logger.add(
+  new winston.transports.Console({
+    format: winston.format.combine(winston.format.colorize(), customFormat),
+  })
+);
 
 export default logger;

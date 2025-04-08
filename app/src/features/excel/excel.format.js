@@ -6,11 +6,10 @@ export const getExcelColumns = () => [
     key: "case à cocher",
     width: 5,
   },
-    {
+  {
     header: "Source",
     key: "Source",
     width: 10,
-    text
   },
   {
     header: "Référence",

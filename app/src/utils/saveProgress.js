@@ -5,15 +5,16 @@ import path from "path";
 import config from "../config/app.config.js";
 import logger from "./logger.js";
 
+const backupPath = path.resolve(config.paths.exportDir, "backup.json");
+
 /**
  * Sauvegarde temporaire des données scrapées dans un fichier JSON.
- * @param {Array<object>} data
+ * @param {Array<object>} data - Liste des données à sauvegarder
  */
 export const saveProgress = (data) => {
-  const backupPath = path.resolve(config.paths.exportDir, "backup.json");
   try {
     fs.writeFileSync(backupPath, JSON.stringify(data, null, 2), "utf8");
-    logger.info(`Progression sauvegardée dans ${backupPath}`);
+    logger.info(`[SAVE 🔄️] Progression sauvegardée dans ${backupPath}`);
   } catch (error) {
     logger.error("Erreur lors de la sauvegarde de la progression", error);
   }
@@ -21,13 +22,19 @@ export const saveProgress = (data) => {
 
 /**
  * Charge les données sauvegardées, le cas échéant.
+ * @returns {Array<object>} La liste sauvegardée ou un tableau vide.
  */
 export const loadProgress = () => {
-  const backupPath = path.resolve(config.paths.exportDir, "backup.json");
   if (fs.existsSync(backupPath)) {
-    const data = JSON.parse(fs.readFileSync(backupPath, "utf8"));
-    logger.info(`Progression chargée depuis ${backupPath}`);
-    return data;
+    try {
+      const data = fs.readFileSync(backupPath, "utf8");
+      const jsonData = JSON.parse(data);
+      logger.info(`[LOAD ⚙️ ] Progression chargée depuis ${backupPath}`);
+      return jsonData;
+    } catch (error) {
+      logger.error("Erreur lors du chargement de la progression", error);
+      return [];
+    }
   }
   return [];
 };
