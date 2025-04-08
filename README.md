@@ -5,7 +5,7 @@
 Voici la structure du projet :
 
 ```plaintext
-scraper_lpdb/                 # Dossier principal du projet
+Extractor-Data-Web/                 # Dossier principal du projet
 │
 ├── exports/                  # Dossier pour stocker les fichiers Excel générés
 │   └── Liste de produits WEBSITE DD-MM-YYYY.xlsx
