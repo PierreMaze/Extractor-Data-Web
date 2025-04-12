@@ -3,3 +3,4 @@ node_modules/
 exports/*
 app/src/logs/*
 NOTREADME.md
+launch.bat

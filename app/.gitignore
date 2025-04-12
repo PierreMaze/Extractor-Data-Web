@@ -1,5 +1,5 @@
 node_modules/
 .env*
-exports/
-app/src/logs/
-
+exports/*
+app/src/logs/*
+pnpm-lock.yaml
