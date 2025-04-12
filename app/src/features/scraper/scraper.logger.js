@@ -15,7 +15,7 @@ const logStart = (msg) => {
 };
 
 const logEnd = () => {
-  logger.info(`🏁 Extraction de données terminé avec succès`);
+  logger.info(`[FINISH 🏁] Extraction de données terminé avec succès`);
 };
 
 const logError = (ref, error) => {

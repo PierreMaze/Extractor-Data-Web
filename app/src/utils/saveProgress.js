@@ -14,10 +14,10 @@ const backupPath = path.resolve(config.paths.exportDir, "backup.json");
 export const saveProgress = (data) => {
   try {
     fs.writeFileSync(backupPath, JSON.stringify(data, null, 2), "utf8");
-    logger.info(`[SAVE 🔄️] Progression sauvegardée dans ${backupPath}`);
   } catch (error) {
     logger.error("Erreur lors de la sauvegarde de la progression", error);
   }
+  logger.info(`[CREATED ☑️ ] Progression sauvegardée dans ${backupPath}`);
 };
 
 /**

@@ -27,12 +27,6 @@ process.on("SIGINT 🚫", () => {
   process.exit(1);
 });
 
-// Pour l'événement 'exit'
-process.on("exit", () => {
-  logger.info("Process exit, sauvegarde finale des données...");
-  saveProgress(currentData);
-});
-
 const main = async () => {
   try {
     // Exécute le scraping
@@ -40,11 +34,8 @@ const main = async () => {
     // Fusionne les données existantes avec les nouvelles (pour reprendre si un backup existait)
     currentData = [...currentData, ...extratorData];
     logger.info(
-      `Extraction terminée. Nombre total de produits extraits : ${currentData.length}`
+      `[BACKUP ℹ️ ] Nombre total de produits extraits : ${currentData.length}`
     );
-
-    // Sauvegarde incrémentale après le scraping
-    saveProgress(currentData);
 
     // Export en Excel
     await exportToExcel(currentData);
@@ -53,6 +44,8 @@ const main = async () => {
     // Sauvegarde en cas d'erreur
     saveProgress(currentData);
   } finally {
+    logger.info("[SAVE 🔄️] Démarrage de la sauvegarde finale des données...");
+    saveProgress(currentData);
     logger.info("=== Fin du programme ===");
   }
 };

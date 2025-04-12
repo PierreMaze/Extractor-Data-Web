@@ -21,7 +21,7 @@ const exportToExcel = async (productList) => {
       logger.warn("Aucun fichier Excel n'a été généré.");
     } else {
       fileNames.forEach((fileName) => {
-        logger.info(`✅ Fichier Excel généré : ${fileName}`);
+        logger.info(`[CREATED ☑️ ]  Fichier Excel généré : ${fileName}`);
       });
     }
   } catch (error) {

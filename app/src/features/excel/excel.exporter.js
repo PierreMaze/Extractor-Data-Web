@@ -21,7 +21,7 @@ export const generateExcelFileForChunk = async (dataChunk, partNumber) => {
 
   dataChunk.forEach((item) => {
     const row = sheet.addRow(item);
-
+    // création de la colonne "Source" avec la valeur "LPDB"
     row.getCell("Source").value = "LPDB";
 
     const cell = row.getCell("reference");
@@ -51,9 +51,7 @@ export const generateExcelFileForChunk = async (dataChunk, partNumber) => {
  */
 export const exportMultipleExcelFiles = async (productList) => {
   if (!productList || productList.length === 0) {
-    logger.warn(
-      "Aucune donnée à exporter. Aucun fichier Excel ne sera généré."
-    );
+    logger.warn("Aucune donnée à exporter. Aucun fichier Excel ne sera généré.");
     return [];
   }
 

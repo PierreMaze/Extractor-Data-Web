@@ -63,7 +63,7 @@ const authenticate = async () => {
 
     scraperLogger.logSuccess("AUTH", "Connexion automatique réussie");
     scraperLogger.logInfo(
-      "START 🆗",
+      "START 🚀",
       "Démarrage de l'extraction de données..."
     );
     await browser.close();
@@ -106,7 +106,7 @@ const authenticate = async () => {
   }
 
   scraperLogger.logSuccess("AUTH", "Connexion manuelle réussie");
-  scraperLogger.logInfo("START 🆗", "Démarrage de l'extraction de données...");
+  scraperLogger.logInfo("START 🚀", "Démarrage de l'extraction de données...");
   return manualCookies;
 };
 
