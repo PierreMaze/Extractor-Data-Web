@@ -8,20 +8,48 @@ import logger from "./logger.js";
 const backupPath = path.resolve(config.paths.exportDir, "backup.json");
 
 /**
- * Sauvegarde temporaire des données scrapées dans un fichier JSON.
- * @param {Array<object>} data - Liste des données à sauvegarder
+ * Sauvegarde temporaire des données scrapées dans un fichier JSON
+ * sans stocker de doublons.
+ *
+ * @param {Array<object>} newData - Liste des nouvelles données à sauvegarder
  */
-export const saveProgress = (data) => {
+export const saveProgress = (newData) => {
   try {
-    fs.writeFileSync(backupPath, JSON.stringify(data, null, 2), "utf8");
+    // Charger le backup existant s'il existe
+    let currentData = [];
+    if (fs.existsSync(backupPath)) {
+      const data = fs.readFileSync(backupPath, "utf8");
+      currentData = JSON.parse(data);
+    }
+
+    // Filtrer les nouveaux éléments qui ne seraient pas déjà présents
+    // On se base ici sur la propriété "id". Adaptez la condition si nécessaire.
+    const filteredNewData = newData.filter(
+      (newItem) =>
+        !currentData.some((existingItem) => existingItem.id === newItem.id)
+    );
+
+    if (filteredNewData.length === 0) {
+      logger.info(
+        "[FOUND 🆗] Aucun nouvel élément à ajouter, le backup est déjà à jour."
+      );
+      return;
+    }
+
+    // Fusionner les données existantes et les nouveaux éléments filtrés
+    const mergedData = [...currentData, ...filteredNewData];
+
+    // Sauvegarder le tableau mis à jour dans backup.json
+    fs.writeFileSync(backupPath, JSON.stringify(mergedData, null, 2), "utf8");
+    logger.info(`[CREATED ☑️ ] Progression sauvegardée dans ${backupPath}`);
   } catch (error) {
     logger.error("Erreur lors de la sauvegarde de la progression", error);
   }
-  logger.info(`[CREATED ☑️ ] Progression sauvegardée dans ${backupPath}`);
 };
 
 /**
  * Charge les données sauvegardées, le cas échéant.
+ *
  * @returns {Array<object>} La liste sauvegardée ou un tableau vide.
  */
 export const loadProgress = () => {
