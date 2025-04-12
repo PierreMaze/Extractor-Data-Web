@@ -1,3 +1,5 @@
+// app/src/setup/exithandler.js
+
 import { saveProgress } from "../utils/saveProgress.js";
 import { generateExcelFileForChunk } from "../features/excel/excel.exporter.js";
 import logger from "../utils/logger.js";

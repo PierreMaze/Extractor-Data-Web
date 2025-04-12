@@ -46,7 +46,6 @@ const runScraper = async () => {
       }
     }
 
-    scraperLogger.logEnd();
     await browser.close();
     return results;
   } catch (mainError) {

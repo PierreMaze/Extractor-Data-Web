@@ -1,5 +1,3 @@
-// app/src/features/excel/excel.exporter.js
-
 import ExcelJS from "exceljs";
 import path from "path";
 import config from "../../config/app.config.js";
@@ -8,12 +6,17 @@ import { getExcelColumns } from "./excel.format.js";
 import logger from "../../utils/logger.js";
 
 /**
- * Génère un fichier Excel pour un ensemble de données (chunk).
- * @param {Array<object>} dataChunk - Sous-ensemble de produits
- * @param {number} partNumber - Numéro de la partie (commence à 1)
+ * Génère un fichier Excel pour un ensemble de données.
+ * @param {Array<object>} dataChunk - Produits à exporter
+ * @param {number} startRef - Référence de départ (config.env)
+ * @param {number} endRef - Référence de fin (config.env)
  * @returns {Promise<string>} - Chemin du fichier généré
  */
-export const generateExcelFileForChunk = async (dataChunk, partNumber) => {
+export const generateExcelFileForChunk = async (
+  dataChunk,
+  startRef,
+  endRef
+) => {
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Produits");
 
@@ -21,7 +24,6 @@ export const generateExcelFileForChunk = async (dataChunk, partNumber) => {
 
   dataChunk.forEach((item) => {
     const row = sheet.addRow(item);
-    // création de la colonne "Source" avec la valeur "LPDB"
     row.getCell("Source").value = "LPDB";
 
     const cell = row.getCell("reference");
@@ -34,24 +36,25 @@ export const generateExcelFileForChunk = async (dataChunk, partNumber) => {
   const today = new Date();
   const dateString = today.toLocaleDateString("fr-FR").replace(/\//g, "-");
 
-  const fileName = `Liste de produits partie n°${partNumber} ${dateString}.xlsx`;
+  const fileName = `Liste de produits ${startRef}-${endRef} ${dateString}.xlsx`;
   const outputPath = path.resolve(config.paths.exportDir, fileName);
 
   fs.mkdirSync(config.paths.exportDir, { recursive: true });
-
   await workbook.xlsx.writeFile(outputPath);
+
   return outputPath;
 };
 
 /**
- * Exporte la liste complète de produits en plusieurs fichiers Excel,
- * un fichier pour chaque chunk de données.
- * @param {Array<object>} productList
- * @returns {Promise<Array<string>>} - Liste des chemins des fichiers générés
+ * Exporte la liste complète de produits en un ou plusieurs fichiers Excel.
+ * @param {Array<object>} productList - Liste des produits
+ * @returns {Promise<Array<string>>} - Chemins des fichiers générés
  */
 export const exportMultipleExcelFiles = async (productList) => {
   if (!productList || productList.length === 0) {
-    logger.warn("Aucune donnée à exporter. Aucun fichier Excel ne sera généré.");
+    logger.warn(
+      "Aucune donnée à exporter. Aucun fichier Excel ne sera généré."
+    );
     return [];
   }
 
@@ -62,9 +65,12 @@ export const exportMultipleExcelFiles = async (productList) => {
   }
 
   const fileNames = [];
+  const { start, end } = config.refRange;
+
   for (let i = 0; i < chunks.length; i++) {
-    const fileName = await generateExcelFileForChunk(chunks[i], i + 1);
+    const fileName = await generateExcelFileForChunk(chunks[i], start, end);
     fileNames.push(fileName);
   }
+
   return fileNames;
 };

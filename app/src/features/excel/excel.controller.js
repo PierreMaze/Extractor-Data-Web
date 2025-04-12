@@ -1,13 +1,11 @@
 // app/src/features/excel/excel.controller.js
-
 import { exportMultipleExcelFiles } from "./excel.exporter.js";
 import logger from "../../utils/logger.js";
+import { getExistingProductReferences } from "../../utils/excelChecker.js";
 
 /**
- * Exporte la liste complète des produits en plusieurs fichiers Excel.
- * Un fichier est généré dès que le seuil de 10 000 références est atteint.
- *
- * @param {Array<object>} productList - La liste complète des produits
+ * Exporte les produits sans doublons en vérifiant la colonne "reference"
+ * @param {Array<object>} productList
  */
 const exportToExcel = async (productList) => {
   if (!productList || productList.length === 0) {
@@ -16,19 +14,26 @@ const exportToExcel = async (productList) => {
   }
 
   try {
-    const fileNames = await exportMultipleExcelFiles(productList);
-    if (fileNames.length === 0) {
-      logger.warn("Aucun fichier Excel n'a été généré.");
-    } else {
-      fileNames.forEach((fileName) => {
-        logger.info(`[CREATED ☑️ ]  Fichier Excel généré : ${fileName}`);
-      });
+    const existingRefs = await getExistingProductReferences();
+
+    const newProducts = productList.filter((product) => {
+      if (!product.reference) return false;
+      return !existingRefs.has(product.reference.toString());
+    });
+
+    if (newProducts.length === 0) {
+      logger.info(
+        "[DUPLICATE 🆗] Aucun nouveau produit à importer qui n'est pas similaire aux données existantes dans le fichier Excel généré."
+      );
+      return;
     }
-  } catch (error) {
-    logger.error(
-      `Erreur lors de l'exportation Excel : ${error.message}`,
-      error
-    );
+
+    const fileNames = await exportMultipleExcelFiles(newProducts);
+    fileNames.forEach((fileName) => {
+      logger.info(`[CREATED ☑️ ] Fichier Excel généré : ${fileName}`);
+    });
+  } catch (err) {
+    logger.error(`Erreur export Excel : ${err.message}`, err);
   }
 };
 
