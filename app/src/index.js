@@ -33,7 +33,9 @@ const main = async () => {
     logger.error("Erreur critique dans l'application", error);
     saveProgress(currentData);
   } finally {
-    logger.info("[SAVE 🔄️] Démarrage de la sauvegarde finale des données...");
+    logger.info(
+      "[SAVE 🔄️] Démarrage de la sauvegarde des données dans un fichier JSON..."
+    );
     saveProgress(currentData);
     logger.info("=== Fin du programme ===");
   }
